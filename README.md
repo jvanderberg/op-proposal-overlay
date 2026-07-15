@@ -7,7 +7,7 @@ covers it, so you can see — parcel by parcel — where the proposal points tow
 downtown-intensity, neighborhood-center, corridor, and neighborhood-fabric
 treatment.
 
-**🔗 Live site:** _(added after first Pages deploy — see below)_
+**🔗 Live site:** <https://jvanderberg.github.io/op-proposal-overlay/>
 
 ![preview](docs/preview.png)
 
