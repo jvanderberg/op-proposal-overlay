@@ -25,6 +25,20 @@
   #titlecard h1{margin:0 0 2px;font-size:15px;font-weight:650;letter-spacing:-.01em}
   #titlecard p{margin:0;font-size:12px;color:var(--muted);line-height:1.45}
   #titlecard .asof{margin-top:8px;font-size:11px;color:var(--muted)}
+  #searchwrap{position:relative;margin-top:10px}
+  #search{width:100%;padding:7px 28px 7px 10px;font-size:13px;color:var(--fg);
+    background:var(--bg);border:1px solid var(--border);border-radius:7px;outline:none}
+  #search:focus{border-color:var(--corridor)}
+  #clr{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;
+    color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:4px;display:none}
+  #results{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:1200;background:var(--panel);
+    border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;display:none;max-height:260px;overflow-y:auto}
+  #results.show{display:block}
+  .res{display:block;width:100%;text-align:left;border:none;background:none;color:var(--fg);
+    cursor:pointer;padding:7px 10px;font-size:12.5px;border-bottom:1px solid var(--border)}
+  .res:last-child{border-bottom:none}
+  .res:hover,.res.sel{background:color-mix(in srgb,var(--corridor) 16%,transparent)}
+  .res small{color:var(--muted);display:block;font-size:11px}
   #legend{bottom:18px;left:12px;padding:10px 12px 11px;min-width:220px}
   #legend .lh{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}
   .row{display:flex;align-items:center;gap:9px;width:100%;padding:5px 6px;border:none;background:none;
@@ -40,6 +54,18 @@
   #infobox a{color:var(--corridor)}
   .leaflet-popup-content{font-size:12.5px;line-height:1.5}
   .pt{display:inline-block;padding:1px 7px;border-radius:999px;color:#fff;font-weight:600;font-size:11px}
+  #ptlink{border:none;background:none;color:var(--corridor);cursor:pointer;font-size:11px;padding:0;
+    text-transform:none;letter-spacing:0;float:right}
+  #ptbox{bottom:18px;left:250px;max-width:340px;padding:14px 16px;display:none;font-size:12.5px;line-height:1.5}
+  @media (max-width:720px){#ptbox{left:12px;right:12px;bottom:auto;top:12px;max-width:none}}
+  #ptbox.show{display:block}
+  #ptclose,#ptbody .more{border:none;background:none;color:var(--muted);cursor:pointer;font-size:16px}
+  .ptrow{display:flex;gap:9px;padding:7px 0;border-top:1px solid var(--border)}
+  .ptrow:first-child{border-top:none}
+  .ptrow .sw{margin-top:2px}
+  .ptrow b{font-weight:650}
+  .ptrow p{margin:2px 0 0;color:var(--muted)}
+  .popmore{border:none;background:none;color:var(--corridor);cursor:pointer;font-size:12px;padding:2px 0 0}
 </style>
 </head>
 <body>
@@ -49,6 +75,12 @@
   <h1>Opticos “Missing Middle” Proposal</h1>
   <p>Place-type framework from Opticos Design’s <em>Map Analysis</em>, georeferenced and encoded onto all <strong id="pcount">—</strong> Oak Park parcels.</p>
   <div class="asof">Proposal source dated 2026-06-08 · analysis, not final zoning</div>
+  <div id="searchwrap">
+    <input id="search" type="text" placeholder="Search address or PIN…" autocomplete="off"
+      aria-label="Search address or PIN" />
+    <button id="clr" aria-label="Clear search">×</button>
+    <div id="results" role="listbox"></div>
+  </div>
 </div>
 
 <button id="info" class="panel" aria-label="Data sources and method">i</button>
@@ -65,8 +97,21 @@
 </div>
 
 <div id="legend" class="panel">
-  <p class="lh">Proposed place type — click to filter</p>
+  <p class="lh">Proposed place type — click to filter
+    <button id="ptlink" aria-label="What do these mean?">ⓘ what do these mean?</button></p>
   <div id="rows"></div>
+</div>
+
+<div id="ptbox" class="panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <strong style="font-size:14px">How the proposal treats each place type</strong>
+    <button id="ptclose" aria-label="Close">×</button>
+  </div>
+  <div id="ptbody"></div>
+  <p style="font-size:10.5px;color:var(--muted);margin:10px 0 0">
+    Descriptions paraphrased from Opticos Design’s Place Types &amp; Testing materials
+    (<a href="https://engageoakpark.com/shape/documents" target="_blank" rel="noopener">Shape Oak Park</a>).
+  </p>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -79,8 +124,25 @@ const COLORS = {
 const ORDER = ['Downtown','Neighborhood Center','Corridor','Neighborhood Fabric'];
 const active = new Set(ORDER);
 
-const map = L.map('map',{preferCanvas:true, zoomControl:true}).setView([41.888,-87.789],14);
-L.control.zoom({position:'bottomright'});
+// Plain-language summary of how the proposal treats each place type.
+// Paraphrased from Opticos's Place Types & Testing materials.
+const PLACE = {
+  'Downtown':{
+    blurb:'Oak Park’s highest-intensity, most walkable core — shops, civic uses, entertainment and housing mixed together.',
+    detail:'The highest-intensity center, defined by compact blocks and high walkability. The proposal keeps the greatest housing capacity here, allowing larger multi-unit and mixed-use buildings alongside the existing commercial and civic core.'},
+  'Neighborhood Center':{
+    blurb:'A small cluster of businesses woven into the surrounding residential blocks.',
+    detail:'Groups of businesses that form a node distinct from — but harmonious with — the residential blocks around them. The proposal supports moderate-intensity mixed-use and multi-unit housing that reinforces these local nodes.'},
+  'Corridor':{
+    blurb:'Frontage along a major street, mixing business and residential building types.',
+    detail:'Major thoroughfares that carry a variety of business and residential types and often form the “edge” between neighborhoods. The proposal allows higher-intensity, graded missing-middle and mixed-use buildings along these frontages (studied at both “low” and “high” corridor intensities).'},
+  'Neighborhood Fabric':{
+    blurb:'The residential heart of Oak Park — where “missing middle everywhere” applies.',
+    detail:'The residential, civic and institutional bulk of the community. This is the core change: instead of single-family-only zoning, the proposal would allow house-scale missing-middle types — duplexes, triplexes and fourplexes — that fit the existing neighborhood scale.'}
+};
+
+const map = L.map('map',{preferCanvas:true, zoomControl:false}).setView([41.888,-87.789],14);
+L.control.zoom({position:'bottomright'}).addTo(map);
 const base = dark
  ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
  : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
@@ -92,26 +154,58 @@ function style(f){
   return {renderer, color: dark?'#0c0f13':'#ffffff', weight:0.3,
           fillColor: COLORS[pt]||'#888', fillOpacity: active.has(pt)?0.78:0, opacity: active.has(pt)?0.5:0};
 }
-let layer;
+let layer, gjData;
 const counts = {};
+const byPin = new Map();        // pin -> leaflet layer
+const searchIdx = [];           // {pin, address, place_type, layer}
+let highlighted = null;
+
+function popupHTML(p, expanded){
+  const info = PLACE[p.place_type] || {blurb:'',detail:''};
+  const more = expanded
+    ? `<div style="margin-top:4px">${info.detail}</div>`
+    : (info.detail ? `<button class="popmore" onclick="expandPopup('${p.pin}')">What changes here? ▸</button>` : '');
+  return `<span class="pt" style="background:${COLORS[p.place_type]}">${p.place_type}</span>`+
+    (p.commercial_bldg?` <span class="pt" style="background:#8e182b">commercial bldg</span>`:``)+
+    `<div style="margin-top:5px;color:var(--muted)">${info.blurb}</div>`+ more +
+    `<hr style="border:none;border-top:1px solid var(--border);margin:7px 0"/>`+
+    `<strong>${p.address||'—'}</strong><br/>PIN ${p.pin} · class ${p.class}<br/>`+
+    `<span style="color:var(--muted)">${p.description||''}</span><br/>`+
+    `<a href="${p.url}" target="_blank" rel="noopener">Assessor record ↗</a>`;
+}
+window.expandPopup = (pin)=>{
+  const l = byPin.get(pin); if(!l) return;
+  l.setPopupContent(popupHTML(l.feature.properties, true));
+};
+
+function selectParcel(l, fly){
+  if(highlighted && highlighted!==l) layer.resetStyle(highlighted);
+  highlighted = l;
+  l.setStyle({color:'#111', weight:2.5, opacity:1, fillOpacity:0.9});
+  l.bringToFront();
+  if(fly) map.setView(l.getBounds().getCenter(), 17, {animate:!matchMedia('(prefers-reduced-motion: reduce)').matches});
+  if(!l.getPopup()) l.bindPopup(popupHTML(l.feature.properties, false));
+  else l.setPopupContent(popupHTML(l.feature.properties, false));
+  l.openPopup();
+  const url = new URL(location); url.searchParams.set('pin', l.feature.properties.pin);
+  history.replaceState(null,'',url);
+}
 
 fetch('parcels_proposal.geojson').then(r=>r.json()).then(gj=>{
+  gjData = gj;
   document.getElementById('pcount').textContent = gj.features.length.toLocaleString();
   for(const f of gj.features){const p=f.properties.place_type; counts[p]=(counts[p]||0)+1;}
   layer = L.geoJSON(gj,{style, onEachFeature:(f,l)=>{
     const p=f.properties;
-    l.on('click',()=>{
-      l.bindPopup(
-        `<span class="pt" style="background:${COLORS[p.place_type]}">${p.place_type}</span>`+
-        (p.commercial_bldg?` <span class="pt" style="background:#8e182b">commercial bldg</span>`:``)+
-        `<br/><strong>${p.address||'—'}</strong><br/>`+
-        `PIN ${p.pin} · class ${p.class}<br/>`+
-        `<span style="color:var(--muted)">${p.description||''}</span><br/>`+
-        `<a href="${p.url}" target="_blank" rel="noopener">Assessor record ↗</a>`
-      ).openPopup();
-    });
+    byPin.set(p.pin, l);
+    searchIdx.push({pin:p.pin, address:(p.address||''), pt:p.place_type, layer:l});
+    l.bindPopup(()=>popupHTML(p,false));
+    l.on('click',()=>selectParcel(l,false));
   }}).addTo(map);
   buildLegend();
+  // permalink: ?pin=…
+  const pin = new URLSearchParams(location.search).get('pin');
+  if(pin && byPin.has(pin)) selectParcel(byPin.get(pin), true);
 });
 
 function buildLegend(){
@@ -122,11 +216,48 @@ function buildLegend(){
     b.innerHTML=`<span class="sw" style="background:${COLORS[pt]}"></span>${pt}<span class="ct">${(counts[pt]||0).toLocaleString()}</span>`;
     b.onclick=()=>{ if(active.has(pt)){active.delete(pt);b.setAttribute('aria-pressed','false');}
                    else{active.add(pt);b.setAttribute('aria-pressed','true');}
-                   layer.setStyle(style); };
+                   layer.setStyle(style); if(highlighted) selectParcel(highlighted,false); };
     rows.appendChild(b);
   }
 }
-document.getElementById('info').onclick=()=>document.getElementById('infobox').classList.toggle('show');
+
+// ---- address / PIN search ----
+const search=document.getElementById('search'), results=document.getElementById('results'), clr=document.getElementById('clr');
+let selIdx=-1, matches=[];
+function runSearch(){
+  const q=search.value.trim().toLowerCase();
+  clr.style.display=q?'block':'none';
+  if(q.length<2){ results.classList.remove('show'); return; }
+  matches=searchIdx.filter(r=>r.address.toLowerCase().includes(q)||r.pin.includes(q)).slice(0,8);
+  results.innerHTML=matches.map((r,i)=>
+    `<button class="res${i===selIdx?' sel':''}" data-i="${i}">${r.address||'(no address)'}<small>PIN ${r.pin} · ${r.pt}</small></button>`).join('');
+  results.classList.toggle('show', matches.length>0);
+  results.querySelectorAll('.res').forEach(el=>el.onclick=()=>choose(+el.dataset.i));
+}
+function choose(i){
+  const r=matches[i]; if(!r) return;
+  search.value=r.address||r.pin; results.classList.remove('show');
+  selectParcel(r.layer, true);
+}
+search.addEventListener('input',()=>{selIdx=-1;runSearch();});
+search.addEventListener('focus',runSearch);
+search.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){selIdx=Math.min(selIdx+1,matches.length-1);runSearch();e.preventDefault();}
+  else if(e.key==='ArrowUp'){selIdx=Math.max(selIdx-1,0);runSearch();e.preventDefault();}
+  else if(e.key==='Enter'){choose(selIdx<0?0:selIdx);}
+  else if(e.key==='Escape'){results.classList.remove('show');search.blur();}
+});
+clr.onclick=()=>{search.value='';clr.style.display='none';results.classList.remove('show');search.focus();};
+document.addEventListener('click',e=>{ if(!e.target.closest('#searchwrap')) results.classList.remove('show'); });
+
+// ---- info + place-type explainer panels ----
+const infobox=document.getElementById('infobox'), ptbox=document.getElementById('ptbox');
+document.getElementById('info').onclick=()=>{infobox.classList.toggle('show');ptbox.classList.remove('show');};
+document.getElementById('ptclose').onclick=()=>ptbox.classList.remove('show');
+document.getElementById('ptbody').innerHTML=ORDER.map(pt=>
+  `<div class="ptrow"><span class="sw" style="background:${COLORS[pt]}"></span>`+
+  `<div><b>${pt}</b><p>${PLACE[pt].detail}</p></div></div>`).join('');
+document.getElementById('ptlink').onclick=()=>{ptbox.classList.toggle('show');infobox.classList.remove('show');};
 </script>
 </body>
 </html>
