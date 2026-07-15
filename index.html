@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oak Park — Opticos Proposal over Parcels</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1a1d21; --muted:#5b6570; --border:#d9dee3;
+    --panel:rgba(255,255,255,.95); --shadow:0 2px 10px rgba(0,0,0,.12);
+    --downtown:#1f8a9c; --center:#e0a72e; --corridor:#e2702d; --fabric:#9db8cc;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12151a; --fg:#e6eaee; --muted:#9aa4b0;
+      --border:#2a3038; --panel:rgba(20,24,30,.94); --shadow:0 2px 12px rgba(0,0,0,.5);
+      --fabric:#5b7185; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100dvh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--fg);background:var(--bg)}
+  #map{position:absolute;inset:0}
+  .panel{position:absolute;z-index:1000;background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;box-shadow:var(--shadow);backdrop-filter:blur(6px)}
+  #titlecard{top:12px;left:12px;max-width:340px;padding:14px 16px}
+  #titlecard h1{margin:0 0 2px;font-size:15px;font-weight:650;letter-spacing:-.01em}
+  #titlecard p{margin:0;font-size:12px;color:var(--muted);line-height:1.45}
+  #titlecard .asof{margin-top:8px;font-size:11px;color:var(--muted)}
+  #legend{bottom:18px;left:12px;padding:10px 12px 11px;min-width:220px}
+  #legend .lh{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}
+  .row{display:flex;align-items:center;gap:9px;width:100%;padding:5px 6px;border:none;background:none;
+    color:var(--fg);font-size:13px;cursor:pointer;border-radius:6px;text-align:left}
+  .row:hover{background:color-mix(in srgb,var(--fg) 8%,transparent)}
+  .row[aria-pressed=false]{opacity:.38}
+  .sw{width:15px;height:15px;border-radius:4px;flex:0 0 auto;border:1px solid rgba(0,0,0,.25)}
+  .row .ct{margin-left:auto;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  #info{top:12px;right:12px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+    font-weight:700;cursor:pointer;font-size:16px}
+  #infobox{top:54px;right:12px;max-width:330px;padding:14px 16px;display:none;font-size:12px;line-height:1.5}
+  #infobox.show{display:block}
+  #infobox a{color:var(--corridor)}
+  .leaflet-popup-content{font-size:12.5px;line-height:1.5}
+  .pt{display:inline-block;padding:1px 7px;border-radius:999px;color:#fff;font-weight:600;font-size:11px}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div id="titlecard" class="panel">
+  <h1>Opticos “Missing Middle” Proposal</h1>
+  <p>Place-type framework from Opticos Design’s <em>Map Analysis</em>, georeferenced and encoded onto all <strong id="pcount">—</strong> Oak Park parcels.</p>
+  <div class="asof">Proposal source dated 2026-06-08 · analysis, not final zoning</div>
+</div>
+
+<button id="info" class="panel" aria-label="Data sources and method">i</button>
+<div id="infobox" class="panel">
+  <strong>What this is</strong><br/>
+  Each parcel is tagged with the Opticos <em>Place Type</em> that covers it, derived by
+  georeferencing the Place Types &amp; Transit map (~12 m accuracy) and sampling it under each
+  parcel polygon.<br/><br/>
+  <strong>Caveat:</strong> this is Opticos’s existing-conditions / framework map — <em>not</em> the
+  final parcel-level proposed zoning (expected around the 2026-07-28 Village Board vote). Corridor =
+  parcels fronting a designated corridor street.<br/><br/>
+  <strong>Sources:</strong> parcels — Cook County GIS (via oak-park-properties); proposal —
+  <a href="https://engageoakpark.com/shape/documents" target="_blank" rel="noopener">Shape Oak Park</a>.
+</div>
+
+<div id="legend" class="panel">
+  <p class="lh">Proposed place type — click to filter</p>
+  <div id="rows"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+const COLORS = {
+  'Downtown':'#1f8a9c','Neighborhood Center':'#e0a72e',
+  'Corridor':'#e2702d','Neighborhood Fabric': dark ? '#5b7185' : '#9db8cc'
+};
+const ORDER = ['Downtown','Neighborhood Center','Corridor','Neighborhood Fabric'];
+const active = new Set(ORDER);
+
+const map = L.map('map',{preferCanvas:true, zoomControl:true}).setView([41.888,-87.789],14);
+L.control.zoom({position:'bottomright'});
+const base = dark
+ ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+ : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+L.tileLayer(base,{attribution:'© OpenStreetMap, © CARTO',subdomains:'abcd',maxZoom:20}).addTo(map);
+const renderer = L.canvas({padding:0.5});
+
+function style(f){
+  const pt = f.properties.place_type;
+  return {renderer, color: dark?'#0c0f13':'#ffffff', weight:0.3,
+          fillColor: COLORS[pt]||'#888', fillOpacity: active.has(pt)?0.78:0, opacity: active.has(pt)?0.5:0};
+}
+let layer;
+const counts = {};
+
+fetch('parcels_proposal.geojson').then(r=>r.json()).then(gj=>{
+  document.getElementById('pcount').textContent = gj.features.length.toLocaleString();
+  for(const f of gj.features){const p=f.properties.place_type; counts[p]=(counts[p]||0)+1;}
+  layer = L.geoJSON(gj,{style, onEachFeature:(f,l)=>{
+    const p=f.properties;
+    l.on('click',()=>{
+      l.bindPopup(
+        `<span class="pt" style="background:${COLORS[p.place_type]}">${p.place_type}</span>`+
+        (p.commercial_bldg?` <span class="pt" style="background:#8e182b">commercial bldg</span>`:``)+
+        `<br/><strong>${p.address||'—'}</strong><br/>`+
+        `PIN ${p.pin} · class ${p.class}<br/>`+
+        `<span style="color:var(--muted)">${p.description||''}</span><br/>`+
+        `<a href="${p.url}" target="_blank" rel="noopener">Assessor record ↗</a>`
+      ).openPopup();
+    });
+  }}).addTo(map);
+  buildLegend();
+});
+
+function buildLegend(){
+  const rows=document.getElementById('rows'); rows.innerHTML='';
+  for(const pt of ORDER){
+    const b=document.createElement('button');
+    b.className='row'; b.setAttribute('aria-pressed','true');
+    b.innerHTML=`<span class="sw" style="background:${COLORS[pt]}"></span>${pt}<span class="ct">${(counts[pt]||0).toLocaleString()}</span>`;
+    b.onclick=()=>{ if(active.has(pt)){active.delete(pt);b.setAttribute('aria-pressed','false');}
+                   else{active.add(pt);b.setAttribute('aria-pressed','true');}
+                   layer.setStyle(style); };
+    rows.appendChild(b);
+  }
+}
+document.getElementById('info').onclick=()=>document.getElementById('infobox').classList.toggle('show');
+</script>
+</body>
+</html>
