@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+@import '@fontsource-variable/geist';
+
+@theme {
+	--font-sans: 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+:root {
+	color-scheme: light dark;
+}
+
+html,
+body,
+#root {
+	height: 100dvh;
+	margin: 0;
+}
+
+body {
+	font-family: var(--font-sans);
+}
+
+/* Leaflet popup restyled to match the app chrome (light + dark) */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: var(--color-white);
+	color: #1a1d21;
+	border-radius: 10px;
+}
+.leaflet-popup-content {
+	font-size: 12.5px;
+	line-height: 1.5;
+	min-width: 210px;
+	margin: 12px 14px;
+}
+@media (prefers-color-scheme: dark) {
+	.leaflet-popup-content-wrapper,
+	.leaflet-popup-tip {
+		background: #1a1f26;
+		color: #e6eaee;
+	}
+	.leaflet-popup-content a {
+		color: #f0a5a0;
+	}
+}
