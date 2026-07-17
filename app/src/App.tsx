@@ -1,62 +1,82 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DistrictDetails } from './components/DistrictDetails';
 import { InfoPanel } from './components/InfoPanel';
-import { Legend } from './components/Legend';
+import { MapControls } from './components/MapControls';
 import { MapView } from './components/MapView';
-import { TitleCard } from './components/TitleCard';
 import { useStore } from './store';
-import type { ParcelCollection, ZoneCode } from './types';
+import type {
+	SearchEntry,
+	SearchTuple,
+	ZoneCode,
+	ZoningSummary,
+} from './types';
 
-const DATA_URL = `${import.meta.env.BASE_URL}parcels_proposed_zoning.geojson`;
+const SUMMARY_URL = `${import.meta.env.BASE_URL}zoning_summary.json`;
+const SEARCH_URL = `${import.meta.env.BASE_URL}parcel_search.json`;
 
 export function App() {
-	const [data, setData] = useState<ParcelCollection | null>(null);
+	const [searchEntries, setSearchEntries] = useState<SearchEntry[]>([]);
+	const [counts, setCounts] = useState({} as Record<ZoneCode, number>);
+	const [total, setTotal] = useState(0);
 	const [error, setError] = useState<string | null>(null);
-	const selectedPin = useStore((s) => s.selectedPin);
+	const selectedPin = useStore((state) => state.selectedPin);
 
 	useEffect(() => {
-		let alive = true;
-		fetch(DATA_URL)
-			.then((r) => {
-				if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
-				return r.json() as Promise<ParcelCollection>;
+		const controller = new AbortController();
+		Promise.all([
+			fetch(SUMMARY_URL, { signal: controller.signal }),
+			fetch(SEARCH_URL, { signal: controller.signal }),
+		])
+			.then(async ([summaryResponse, searchResponse]) => {
+				if (!summaryResponse.ok) {
+					throw new Error(
+						`${summaryResponse.status} ${summaryResponse.statusText}`,
+					);
+				}
+				if (!searchResponse.ok) {
+					throw new Error(
+						`${searchResponse.status} ${searchResponse.statusText}`,
+					);
+				}
+				return Promise.all([
+					summaryResponse.json() as Promise<ZoningSummary>,
+					searchResponse.json() as Promise<SearchTuple[]>,
+				]);
 			})
-			.then((fc) => alive && setData(fc))
-			.catch((e: unknown) => alive && setError(String(e)));
-		return () => {
-			alive = false;
-		};
+			.then(([summary, tuples]) => {
+				setCounts(summary.summary);
+				setTotal(summary.total);
+				setSearchEntries(
+					tuples.map(([pin, address, zone, longitude, latitude]) => ({
+						pin,
+						address,
+						zone,
+						center: [longitude, latitude],
+					})),
+				);
+			})
+			.catch((fetchError: unknown) => {
+				if (!controller.signal.aborted) setError(String(fetchError));
+			});
+		return () => controller.abort();
 	}, []);
 
-	// keep ?pin= in the URL in sync with the selected parcel
 	useEffect(() => {
 		const url = new URL(window.location.href);
-		if (selectedPin) {
-			url.searchParams.set('pin', selectedPin);
-		} else {
-			url.searchParams.delete('pin');
-		}
+		if (selectedPin) url.searchParams.set('pin', selectedPin);
+		else url.searchParams.delete('pin');
 		window.history.replaceState(null, '', url);
 	}, [selectedPin]);
 
-	const counts = useMemo(() => {
-		const c = {} as Record<ZoneCode, number>;
-		if (data) {
-			for (const f of data.features) {
-				const z = f.properties.proposed_zone;
-				c[z] = (c[z] ?? 0) + 1;
-			}
-		}
-		return c;
-	}, [data]);
-
-	const total = data?.features.length ?? 0;
-
 	return (
 		<div className="relative h-dvh w-dvw overflow-hidden">
-			<MapView data={data} />
-			<TitleCard data={data} total={total} error={error} />
-			<Legend counts={counts} />
+			<MapView searchEntries={searchEntries} />
+			<MapControls
+				searchEntries={searchEntries}
+				counts={counts}
+				total={total}
+				error={error}
+			/>
 			<InfoPanel />
 			<DistrictDetails />
 		</div>

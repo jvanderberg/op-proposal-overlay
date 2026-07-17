@@ -1,4 +1,3 @@
-import type { LatLngBoundsExpression } from 'leaflet';
 import type { ZoneCode } from './types';
 
 export interface DistrictMeta {
@@ -19,7 +18,8 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		family: 'Downtown',
 		color: '#1c4a65',
 		from: 'unchanged',
-		detail: 'Downtown sub-district — no change proposed.',
+		detail:
+			'No district-specific remap is recommended; villagewide recommendations may still apply.',
 	},
 	'DT-2': {
 		code: 'DT-2',
@@ -27,7 +27,8 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		family: 'Downtown',
 		color: '#65b6cb',
 		from: 'unchanged',
-		detail: 'Downtown sub-district — no change proposed.',
+		detail:
+			'No district-specific remap is recommended; villagewide recommendations may still apply.',
 	},
 	'DT-3': {
 		code: 'DT-3',
@@ -35,7 +36,8 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		family: 'Downtown',
 		color: '#c0e5e5',
 		from: 'unchanged',
-		detail: 'Downtown sub-district — no change proposed.',
+		detail:
+			'No district-specific remap is recommended; villagewide recommendations may still apply.',
 	},
 	'M-1': {
 		code: 'M-1',
@@ -80,7 +82,7 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		color: '#febe14',
 		from: 'R-2, R-3-50, R-3-35, R-4, R-5',
 		detail:
-			'A range of neighborhood-scale housing types on moderate lots — the "missing middle" core. Min lot width 30 ft · max 35 ft & 3 stories · up to 4 units/lot (6 on lots ≥ 50 × 125 ft).',
+			'A range of neighborhood-scale housing types on moderate lots — the "missing middle" core. Min lot width 30 ft · max 35 ft & 3 stories · up to 4 units broadly, with conditional six-unit pathways.',
 	},
 	'N-3': {
 		code: 'N-3',
@@ -97,7 +99,8 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		family: 'Special (unchanged)',
 		color: '#d2d2d2',
 		from: 'unchanged',
-		detail: 'Special-purpose district — no change proposed.',
+		detail:
+			'No district-specific remap is recommended; villagewide recommendations may still apply.',
 	},
 	I: {
 		code: 'I',
@@ -105,7 +108,8 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		family: 'Special (unchanged)',
 		color: '#d2d2d2',
 		from: 'unchanged',
-		detail: 'Special-purpose district — no change proposed.',
+		detail:
+			'No district-specific remap is recommended; villagewide recommendations may still apply.',
 	},
 	OS: {
 		code: 'OS',
@@ -113,7 +117,8 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		family: 'Special (unchanged)',
 		color: '#c8dcc8',
 		from: 'unchanged',
-		detail: 'Special-purpose district — no change proposed.',
+		detail:
+			'No district-specific remap is recommended; villagewide recommendations may still apply.',
 	},
 	'P-R': {
 		code: 'P-R',
@@ -121,7 +126,8 @@ export const DISTRICTS: Record<ZoneCode, DistrictMeta> = {
 		family: 'Special (unchanged)',
 		color: '#ebebeb',
 		from: 'unchanged',
-		detail: 'Right-of-way — no change proposed.',
+		detail:
+			'No district-specific remap is recommended; villagewide recommendations may still apply.',
 	},
 };
 
@@ -148,19 +154,23 @@ export const FAMILIES = [
 	'Special (unchanged)',
 ];
 
-export const CARTO_LIGHT =
-	'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-export const CARTO_DARK =
-	'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+export const CARTO_LIGHT = ['a', 'b', 'c', 'd'].map(
+	(subdomain) =>
+		`https://${subdomain}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png`,
+);
+export const CARTO_DARK = ['a', 'b', 'c', 'd'].map(
+	(subdomain) =>
+		`https://${subdomain}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png`,
+);
 
 /** geographic bounds of the georeferenced Opticos map crops (WGS84 SW, NE) */
-export const OVERLAY_BOUNDS: LatLngBoundsExpression = [
+export const OVERLAY_BOUNDS: [[number, number], [number, number]] = [
 	[41.864967, -87.806035],
 	[41.909314, -87.774295],
 ];
 
 export const UNDERLAYS = [
-	{ value: '', label: 'off' },
+	{ value: '', label: 'None' },
 	{ value: 'proposed_web.png', label: 'Opticos proposed map' },
 	{ value: 'placetypes_web.png', label: 'Place Types map' },
 ];

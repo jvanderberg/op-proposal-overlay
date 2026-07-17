@@ -10,11 +10,11 @@ export function DistrictDetails() {
 	if (panel !== 'districts') return null;
 
 	return (
-		<div className="absolute top-[54px] right-3 z-[1000] max-h-[78dvh] max-w-[340px] overflow-y-auto rounded-[10px] border border-neutral-200 bg-white/95 p-4 shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95 max-sm:left-3 max-sm:max-w-none">
+		<div className="absolute top-[54px] right-3 z-[1000] max-h-[calc(100dvh-66px)] w-[340px] max-w-[calc(100vw-24px)] overflow-y-auto rounded-[10px] border border-neutral-200 bg-white/95 p-4 shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
 			<button
 				type="button"
 				aria-label="Close"
-				className="float-right text-neutral-500"
+				className="float-right rounded-md p-1 text-neutral-500 hover:bg-black/5 dark:text-neutral-300 dark:hover:bg-white/10"
 				onClick={() => setPanel('districts')}
 			>
 				<X size={16} />
@@ -34,15 +34,17 @@ export function DistrictDetails() {
 							<b>
 								{z} · {DISTRICTS[z].name}
 							</b>{' '}
-							<span className="text-neutral-500">
+							<span className="text-neutral-500 dark:text-neutral-300">
 								(from {DISTRICTS[z].from})
 							</span>
-							<p className="mt-0.5 text-neutral-500">{DISTRICTS[z].detail}</p>
+							<p className="mt-0.5 text-neutral-500 dark:text-neutral-300">
+								{DISTRICTS[z].detail}
+							</p>
 						</div>
 					</div>
 				))}
 			</div>
-			<p className="mt-2.5 text-[10.5px] text-neutral-500">
+			<p className="mt-2.5 text-[10.5px] text-neutral-500 dark:text-neutral-300">
 				Standards summarized from Opticos’s Zoning Recommendations (Tables 4-1
 				&amp; 5-1).
 			</p>

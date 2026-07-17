@@ -1,41 +1,25 @@
 import { X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useStore } from '../store';
-import type { ParcelCollection } from '../types';
+import type { SearchEntry } from '../types';
 
-interface Match {
-	pin: string;
-	address: string;
-	zone: string;
-}
-
-export function SearchInput({ data }: { data: ParcelCollection | null }) {
+export function SearchInput({ entries }: { entries: SearchEntry[] }) {
 	const [text, setText] = useState('');
 	const [open, setOpen] = useState(false);
 	const [sel, setSel] = useState(-1);
 	const setSelectedPin = useStore((s) => s.setSelectedPin);
-
-	const index = useMemo<Match[]>(
-		() =>
-			data?.features.map((f) => ({
-				pin: f.properties.pin,
-				address: f.properties.address ?? '',
-				zone: f.properties.proposed_zone,
-			})) ?? [],
-		[data],
-	);
 
 	const q = text.trim().toLowerCase();
 	const matches = useMemo(
 		() =>
 			q.length < 2
 				? []
-				: index
+				: entries
 						.filter(
 							(m) => m.address.toLowerCase().includes(q) || m.pin.includes(q),
 						)
 						.slice(0, 8),
-		[index, q],
+		[entries, q],
 	);
 
 	function choose(i: number) {
@@ -53,7 +37,7 @@ export function SearchInput({ data }: { data: ParcelCollection | null }) {
 				value={text}
 				placeholder="Search address or PIN…"
 				aria-label="Search address or PIN"
-				className="w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 pr-8 text-[13px] text-neutral-900 outline-none focus:border-red-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"
+				className="w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 pr-8 text-[13px] text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-red-700 focus:ring-2 focus:ring-red-700/15 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-400"
 				onFocus={() => setOpen(true)}
 				onChange={(e) => {
 					setText(e.target.value);
@@ -79,7 +63,7 @@ export function SearchInput({ data }: { data: ParcelCollection | null }) {
 				<button
 					type="button"
 					aria-label="Clear search"
-					className="-translate-y-1/2 absolute top-1/2 right-1.5 p-1 text-neutral-500"
+					className="-translate-y-1/2 absolute top-1/2 right-1.5 p-1 text-neutral-500 dark:text-neutral-300"
 					onClick={() => {
 						setText('');
 						setOpen(false);
@@ -99,7 +83,7 @@ export function SearchInput({ data }: { data: ParcelCollection | null }) {
 							onClick={() => choose(i)}
 						>
 							{m.address || '(no address)'}
-							<small className="block text-[11px] text-neutral-500">
+							<small className="block text-[11px] text-neutral-500 dark:text-neutral-300">
 								PIN {m.pin} · {m.zone}
 							</small>
 						</button>

@@ -19,6 +19,7 @@ const checks = [
       ? ['npx', '@biomejs/biome', 'check', '--write']
       : ['npx', '@biomejs/biome', 'check'],
   },
+	{ label: 'Tests', cmd: ['npm', 'test'] },
 ];
 
 let failed = false;

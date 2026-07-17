@@ -7,6 +7,7 @@ type Panel = 'none' | 'info' | 'districts';
 interface AppState {
 	activeZones: Set<ZoneCode>;
 	toggleZone: (z: ZoneCode) => void;
+	setAllZones: (active: boolean) => void;
 
 	selectedPin: string | null;
 	setSelectedPin: (pin: string | null) => void;
@@ -37,6 +38,8 @@ export const useStore = create<AppState>((set) => ({
 			}
 			return { activeZones: next };
 		}),
+	setAllZones: (active) =>
+		set({ activeZones: active ? new Set(ZONE_ORDER) : new Set<ZoneCode>() }),
 
 	selectedPin: initialPin(),
 	setSelectedPin: (pin) => set({ selectedPin: pin }),

@@ -1,18 +1,667 @@
 {
   "summary": {
     "M-1": 605,
-    "N-3": 5102,
+    "N-3": 5043,
     "N-2": 10336,
-    "P-R": 9,
+    "P-R": 68,
     "M-3": 400,
     "DT-2": 133,
     "DT-1": 187,
     "N-1": 377,
-    "I": 45,
+    "I": 46,
     "DT-3": 59,
-    "OS": 14,
+    "OS": 13,
     "H": 17,
     "M-2": 239
   },
-  "total": 17523
+  "total": 17523,
+  "unmatched": 0,
+  "boundary_parcels": [
+    {
+      "pin": "16072250770000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251030000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251020000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16051140010000",
+      "assigned": "I",
+      "coverage": 0.515456,
+      "zones": [
+        "I",
+        "OS"
+      ]
+    },
+    {
+      "pin": "16072251040000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251010000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250780000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251000000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251060000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250790000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251050000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250970000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250800000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250980000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250810000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251080000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251070000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250990000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251090000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250820000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250830000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250960000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16173160250000",
+      "assigned": "I",
+      "coverage": 0.616695,
+      "zones": [
+        "I",
+        "OS",
+        "R-4"
+      ]
+    },
+    {
+      "pin": "16072250840000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072251100000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250950000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250530000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250420000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250230000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250340000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250410000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250490000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250320000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250470000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250520000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250240000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250260000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250480000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250220000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250330000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250250000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250310000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250500000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250510000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250210000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250300000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250380000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250460000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250200000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250280000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250400000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250440000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250270000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250370000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250190000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250290000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250180000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250390000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250450000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16072250430000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16073070130000",
+      "assigned": "R-7",
+      "coverage": 0.815191,
+      "zones": [
+        "R-7",
+        "NC"
+      ]
+    },
+    {
+      "pin": "16081130140000",
+      "assigned": "I",
+      "coverage": 0.584008,
+      "zones": [
+        "I",
+        "OS",
+        "R-2"
+      ]
+    },
+    {
+      "pin": "16073180170000",
+      "assigned": "I",
+      "coverage": 0.813618,
+      "zones": [
+        "I",
+        "OS",
+        "R-5"
+      ]
+    },
+    {
+      "pin": "16072250890000",
+      "assigned": "P-R",
+      "coverage": 1,
+      "zones": [
+        "P-R",
+        "R-7"
+      ]
+    },
+    {
+      "pin": "16053090180000",
+      "assigned": "I",
+      "coverage": 0.687122,
+      "zones": [
+        "I",
+        "OS",
+        "R-3-50"
+      ]
+    }
+  ],
+  "low_coverage_parcels": [
+    {
+      "pin": "16071250360000",
+      "assigned": "DT-1",
+      "total_coverage": 0.955449
+    },
+    {
+      "pin": "16063240260000",
+      "assigned": "I",
+      "total_coverage": 0.875274
+    },
+    {
+      "pin": "16181020180000",
+      "assigned": "H",
+      "total_coverage": 0.9398
+    },
+    {
+      "pin": "16181020210000",
+      "assigned": "H",
+      "total_coverage": 0.939756
+    },
+    {
+      "pin": "16181020120000",
+      "assigned": "H",
+      "total_coverage": 0.959771
+    },
+    {
+      "pin": "16181020230000",
+      "assigned": "H",
+      "total_coverage": 0.939677
+    },
+    {
+      "pin": "16181020220000",
+      "assigned": "H",
+      "total_coverage": 0.939831
+    },
+    {
+      "pin": "16181020200000",
+      "assigned": "H",
+      "total_coverage": 0.939828
+    },
+    {
+      "pin": "16074210120000",
+      "assigned": "I",
+      "total_coverage": 0.707655
+    },
+    {
+      "pin": "16071290310000",
+      "assigned": "R-7",
+      "total_coverage": 0.838179
+    },
+    {
+      "pin": "16181150200000",
+      "assigned": "R-3-50",
+      "total_coverage": 0.00002
+    }
+  ]
 }

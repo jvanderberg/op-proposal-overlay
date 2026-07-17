@@ -1,10 +1,3 @@
-import type {
-	Feature,
-	FeatureCollection,
-	MultiPolygon,
-	Polygon,
-} from 'geojson';
-
 export type ZoneCode =
 	| 'DT-1'
 	| 'DT-2'
@@ -25,12 +18,28 @@ export interface ParcelProps {
 	address: string;
 	class: string;
 	description?: string;
-	url?: string;
 	existing_zone: string;
 	proposed_zone: ZoneCode;
-	proposed_name: string;
 }
 
-export type ParcelGeometry = Polygon | MultiPolygon;
-export type ParcelFeature = Feature<ParcelGeometry, ParcelProps>;
-export type ParcelCollection = FeatureCollection<ParcelGeometry, ParcelProps>;
+export interface SearchEntry {
+	pin: string;
+	address: string;
+	zone: ZoneCode;
+	/** [longitude, latitude] center of the parcel bounds */
+	center: [number, number];
+}
+
+export type SearchTuple = [
+	pin: string,
+	address: string,
+	zone: ZoneCode,
+	longitude: number,
+	latitude: number,
+];
+
+export interface ZoningSummary {
+	summary: Record<ZoneCode, number>;
+	total: number;
+	unmatched: number;
+}
