@@ -1,5 +1,6 @@
 import { PanelLeftClose, SlidersHorizontal } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useStore } from '../store';
 import type { SearchEntry, ZoneCode } from '../types';
 import { Legend } from './Legend';
 import { TitleCard } from './TitleCard';
@@ -11,8 +12,25 @@ interface Props {
 	error: string | null;
 }
 
+function initiallyOpen() {
+	if (
+		typeof window === 'undefined' ||
+		typeof window.matchMedia !== 'function'
+	) {
+		return true;
+	}
+	return !window.matchMedia('(max-width: 640px)').matches;
+}
+
 export function MapControls({ searchEntries, counts, total, error }: Props) {
-	const [open, setOpen] = useState(true);
+	const [open, setOpen] = useState(initiallyOpen);
+	const selectedPin = useStore((state) => state.selectedPin);
+
+	useEffect(() => {
+		if (selectedPin && window.matchMedia('(max-width: 640px)').matches) {
+			setOpen(false);
+		}
+	}, [selectedPin]);
 
 	if (!open) {
 		return (

@@ -40,6 +40,6 @@ describe('popupContent', () => {
 		expect(content.textContent).toContain(
 			'this map does not determine parcel eligibility',
 		);
-		expect(content.querySelector('details')?.open).toBe(true);
+		expect(content.querySelector('details')?.open).toBe(false);
 	});
 });

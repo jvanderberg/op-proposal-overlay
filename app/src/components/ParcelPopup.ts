@@ -40,7 +40,6 @@ export function popupContent(parcel: ParcelProps): HTMLElement {
 
 	const details = document.createElement('details');
 	details.className = 'parcel-popup-changes';
-	details.open = true;
 	const summary = document.createElement('summary');
 	summary.textContent = 'What would change';
 	const table = document.createElement('dl');
