@@ -12,6 +12,9 @@ interface Props {
 	error: string | null;
 }
 
+const MOBILE_VIEWPORT_QUERY =
+	'(max-width: 640px), (max-height: 500px) and (pointer: coarse)';
+
 function initiallyOpen() {
 	if (
 		typeof window === 'undefined' ||
@@ -19,7 +22,7 @@ function initiallyOpen() {
 	) {
 		return true;
 	}
-	return !window.matchMedia('(max-width: 640px)').matches;
+	return !window.matchMedia(MOBILE_VIEWPORT_QUERY).matches;
 }
 
 export function MapControls({ searchEntries, counts, total, error }: Props) {
@@ -27,9 +30,7 @@ export function MapControls({ searchEntries, counts, total, error }: Props) {
 	const selectedPin = useStore((state) => state.selectedPin);
 
 	useEffect(() => {
-		if (selectedPin && window.matchMedia('(max-width: 640px)').matches) {
-			setOpen(false);
-		}
+		if (selectedPin) setOpen(false);
 	}, [selectedPin]);
 
 	if (!open) {
@@ -38,7 +39,7 @@ export function MapControls({ searchEntries, counts, total, error }: Props) {
 				type="button"
 				aria-label="Open map controls"
 				onClick={() => setOpen(true)}
-				className="absolute top-3 left-3 z-[1000] flex items-center gap-2 rounded-[10px] border border-neutral-200 bg-white/95 px-3 py-2 text-[12px] font-medium shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95"
+				className="map-controls-trigger fixed z-[1000] flex items-center gap-2 rounded-[10px] border border-neutral-200 bg-white/95 px-3 py-2 text-[12px] font-medium shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95"
 			>
 				<SlidersHorizontal size={15} />
 				Open map controls
@@ -47,7 +48,7 @@ export function MapControls({ searchEntries, counts, total, error }: Props) {
 	}
 
 	return (
-		<aside className="absolute top-3 left-3 z-[1000] flex max-h-[calc(100dvh-24px)] w-[350px] max-w-[calc(100vw-64px)] flex-col overflow-hidden rounded-[10px] border border-neutral-200 bg-white/95 shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
+		<aside className="map-controls-panel fixed z-[1000] flex w-[350px] flex-col overflow-hidden rounded-[10px] border border-neutral-200 bg-white/95 shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
 			<button
 				type="button"
 				aria-label="Close map controls"

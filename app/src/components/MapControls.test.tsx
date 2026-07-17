@@ -1,10 +1,12 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useStore } from '../store';
 import type { ZoneCode } from '../types';
 import { MapControls } from './MapControls';
 
 describe('MapControls', () => {
+	beforeEach(() => useStore.getState().setSelectedPin(null));
 	afterEach(cleanup);
 
 	it('combines the search and legend in one collapsible panel', async () => {
@@ -61,5 +63,23 @@ describe('MapControls', () => {
 			configurable: true,
 			value: originalMatchMedia,
 		});
+	});
+
+	it('closes after a parcel is selected', async () => {
+		render(
+			<MapControls
+				searchEntries={[]}
+				counts={{} as Record<ZoneCode, number>}
+				total={0}
+				error={null}
+			/>,
+		);
+
+		act(() => useStore.getState().setSelectedPin('12345678900000'));
+		await waitFor(() =>
+			expect(
+				screen.getByRole('button', { name: 'Open map controls' }),
+			).toBeTruthy(),
+		);
 	});
 });

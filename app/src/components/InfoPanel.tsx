@@ -11,12 +11,12 @@ export function InfoPanel() {
 				type="button"
 				aria-label="Data sources and method"
 				onClick={() => setPanel('info')}
-				className="absolute top-3 right-3 z-[1000] flex h-[36px] w-[36px] items-center justify-center rounded-[10px] border border-neutral-200 bg-white/95 shadow-md backdrop-blur hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/95 dark:hover:bg-neutral-800"
+				className="info-trigger fixed z-[1000] flex h-[36px] w-[36px] items-center justify-center rounded-[10px] border border-neutral-200 bg-white/95 shadow-md backdrop-blur hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/95 dark:hover:bg-neutral-800"
 			>
 				<Info size={17} />
 			</button>
 			{panel === 'info' && (
-				<div className="absolute top-[54px] right-3 z-[1000] max-h-[calc(100dvh-66px)] w-[340px] max-w-[calc(100vw-24px)] overflow-y-auto rounded-[10px] border border-neutral-200 bg-white/95 p-4 text-[12px] leading-relaxed shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
+				<div className="context-panel fixed z-[1000] w-[340px] overflow-y-auto rounded-[10px] border border-neutral-200 bg-white/95 p-4 text-[12px] leading-relaxed shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
 					<button
 						type="button"
 						aria-label="Close data sources and method"

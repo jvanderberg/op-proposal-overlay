@@ -21,11 +21,6 @@ interface AppState {
 	setPanel: (p: Panel) => void;
 }
 
-function initialPin(): string | null {
-	if (typeof window === 'undefined') return null;
-	return new URLSearchParams(window.location.search).get('pin');
-}
-
 export const useStore = create<AppState>((set) => ({
 	activeZones: new Set(ZONE_ORDER),
 	toggleZone: (z) =>
@@ -41,7 +36,7 @@ export const useStore = create<AppState>((set) => ({
 	setAllZones: (active) =>
 		set({ activeZones: active ? new Set(ZONE_ORDER) : new Set<ZoneCode>() }),
 
-	selectedPin: initialPin(),
+	selectedPin: null,
 	setSelectedPin: (pin) => set({ selectedPin: pin }),
 
 	underlay: '',

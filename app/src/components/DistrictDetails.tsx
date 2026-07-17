@@ -10,7 +10,7 @@ export function DistrictDetails() {
 	if (panel !== 'districts') return null;
 
 	return (
-		<div className="absolute top-[54px] right-3 z-[1000] max-h-[calc(100dvh-66px)] w-[340px] max-w-[calc(100vw-24px)] overflow-y-auto rounded-[10px] border border-neutral-200 bg-white/95 p-4 shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
+		<div className="context-panel fixed z-[1000] w-[340px] overflow-y-auto rounded-[10px] border border-neutral-200 bg-white/95 p-4 shadow-md backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
 			<button
 				type="button"
 				aria-label="Close"

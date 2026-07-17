@@ -3,7 +3,6 @@ import { DistrictDetails } from './components/DistrictDetails';
 import { InfoPanel } from './components/InfoPanel';
 import { MapControls } from './components/MapControls';
 import { MapView } from './components/MapView';
-import { useStore } from './store';
 import type {
 	SearchEntry,
 	SearchTuple,
@@ -19,7 +18,6 @@ export function App() {
 	const [counts, setCounts] = useState({} as Record<ZoneCode, number>);
 	const [total, setTotal] = useState(0);
 	const [error, setError] = useState<string | null>(null);
-	const selectedPin = useStore((state) => state.selectedPin);
 
 	useEffect(() => {
 		const controller = new AbortController();
@@ -60,13 +58,6 @@ export function App() {
 			});
 		return () => controller.abort();
 	}, []);
-
-	useEffect(() => {
-		const url = new URL(window.location.href);
-		if (selectedPin) url.searchParams.set('pin', selectedPin);
-		else url.searchParams.delete('pin');
-		window.history.replaceState(null, '', url);
-	}, [selectedPin]);
 
 	return (
 		<div className="relative h-dvh w-dvw overflow-hidden">
