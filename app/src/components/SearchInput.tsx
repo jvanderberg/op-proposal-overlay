@@ -43,7 +43,7 @@ export function SearchInput({ entries }: { entries: SearchEntry[] }) {
 				value={text}
 				placeholder="Search address or PIN…"
 				aria-label="Search address or PIN"
-				className="w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 pr-8 text-[13px] text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-red-700 focus:ring-2 focus:ring-red-700/15 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-400"
+				className="w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 pr-8 text-[16px] text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-red-700 focus:ring-2 focus:ring-red-700/15 sm:text-[13px] dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-400"
 				onFocus={() => setOpen(true)}
 				onChange={(e) => {
 					setText(e.target.value);

@@ -21,6 +21,7 @@ import {
 } from '../mapStyle';
 import { useStore } from '../store';
 import type { ParcelProps, SearchEntry } from '../types';
+import { MobileParcelPopup } from './MobileParcelPopup';
 import { popupContent } from './ParcelPopup';
 
 const PARCELS_URL = `${import.meta.env.BASE_URL}parcels_proposed_zoning.geojson`;
@@ -31,6 +32,8 @@ const SELECTED_FILL = 'parcel-selected-fill';
 const SELECTED_OUTLINE = 'parcel-selected-outline';
 const PARCEL_LAYERS = [SELECTED_FILL, PARCEL_FILL];
 const POPUP_OPTIONS = { maxWidth: '380px', focusAfterOpen: false } as const;
+const MOBILE_POPUP_QUERY =
+	'(max-width: 640px), (max-height: 500px) and (pointer: coarse)';
 
 function overlayCoordinates(): [
 	[number, number],
@@ -68,6 +71,7 @@ export function MapView({ searchEntries }: { searchEntries: SearchEntry[] }) {
 	const popupPinRef = useRef<string | null>(null);
 	const [ready, setReady] = useState(false);
 	const [mapError, setMapError] = useState<string | null>(null);
+	const [mobilePopup, setMobilePopup] = useState<ParcelProps | null>(null);
 
 	const activeZones = useStore((state) => state.activeZones);
 	const selectedPin = useStore((state) => state.selectedPin);
@@ -82,6 +86,7 @@ export function MapView({ searchEntries }: { searchEntries: SearchEntry[] }) {
 	useEffect(() => {
 		if (!containerRef.current) return;
 		const themeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+		const mobilePopupQuery = window.matchMedia(MOBILE_POPUP_QUERY);
 		const isDark = themeQuery.matches;
 		let map: MapLibreMap;
 		try {
@@ -121,6 +126,13 @@ export function MapView({ searchEntries }: { searchEntries: SearchEntry[] }) {
 		function showPopup(feature: GeoJSONFeature, location: LngLatLike) {
 			const properties = parcelProperties(feature);
 			popupRef.current?.remove();
+			if (mobilePopupQuery.matches) {
+				popupRef.current = null;
+				popupPinRef.current = properties.pin;
+				setMobilePopup(properties);
+				return;
+			}
+			setMobilePopup(null);
 			popupRef.current = new maplibregl.Popup(POPUP_OPTIONS)
 				.setLngLat(location)
 				.setDOMContent(popupContent(properties))
@@ -251,6 +263,7 @@ export function MapView({ searchEntries }: { searchEntries: SearchEntry[] }) {
 		if (!selectedPin) {
 			popupRef.current?.remove();
 			popupPinRef.current = null;
+			setMobilePopup(null);
 			return;
 		}
 
@@ -268,10 +281,19 @@ export function MapView({ searchEntries }: { searchEntries: SearchEntry[] }) {
 		map.once('idle', () => {
 			const feature = map.queryRenderedFeatures({ layers: [SELECTED_FILL] })[0];
 			if (!feature || String(feature.properties.pin) !== selectedPin) return;
+			const properties = parcelProperties(feature);
+			if (window.matchMedia(MOBILE_POPUP_QUERY).matches) {
+				popupRef.current?.remove();
+				popupRef.current = null;
+				setMobilePopup(properties);
+				popupPinRef.current = selectedPin;
+				return;
+			}
+			setMobilePopup(null);
 			popupRef.current?.remove();
 			popupRef.current = new maplibregl.Popup(POPUP_OPTIONS)
 				.setLngLat(entry.center)
-				.setDOMContent(popupContent(parcelProperties(feature)))
+				.setDOMContent(popupContent(properties))
 				.addTo(map);
 			popupPinRef.current = selectedPin;
 		});
@@ -280,6 +302,12 @@ export function MapView({ searchEntries }: { searchEntries: SearchEntry[] }) {
 	return (
 		<>
 			<div ref={containerRef} className="absolute inset-0 h-full w-full" />
+			{mobilePopup && (
+				<MobileParcelPopup
+					parcel={mobilePopup}
+					onClose={() => setSelectedPin(null)}
+				/>
+			)}
 			{mapError && (
 				<div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-100 p-8 text-center text-red-700 dark:bg-neutral-950 dark:text-red-300">
 					{mapError}
