@@ -78,7 +78,7 @@ export function Legend({ counts }: { counts: Record<ZoneCode, number> }) {
 										/ Sub-District| \(unchanged\)/,
 										'',
 									)}
-									<span className="ml-auto text-[10.5px] text-neutral-500 tabular-nums dark:text-neutral-300 max-sm:hidden">
+									<span className="ml-auto shrink-0 text-[10.5px] text-neutral-500 tabular-nums dark:text-neutral-300">
 										{counts[z].toLocaleString()}
 									</span>
 								</button>

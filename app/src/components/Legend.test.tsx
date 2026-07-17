@@ -26,6 +26,8 @@ describe('Legend', () => {
 		const district = screen.getByRole('button', {
 			name: /N-1 Neighborhood 1/i,
 		});
+		const count = screen.getByText('12');
+		expect(count.className).not.toContain('max-sm:hidden');
 		expect(district.getAttribute('aria-pressed')).toBe('true');
 		await user.click(district);
 		expect(district.getAttribute('aria-pressed')).toBe('false');
