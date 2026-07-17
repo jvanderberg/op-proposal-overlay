@@ -29,14 +29,14 @@ describe('SearchInput', () => {
 	it('selects a parcel by address', async () => {
 		const user = userEvent.setup();
 		render(<SearchInput entries={ENTRIES} />);
+		const input = screen.getByRole('textbox', { name: /search address/i });
 
-		await user.type(
-			screen.getByRole('textbox', { name: /search address/i }),
-			'lake',
-		);
+		await user.type(input, 'lake');
+		expect(document.activeElement).toBe(input);
 		await user.click(screen.getByRole('button', { name: /123 Lake Street/i }));
 
 		expect(useStore.getState().selectedPin).toBe('12345678900000');
+		expect(document.activeElement).not.toBe(input);
 		expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe(
 			'123 Lake Street',
 		);

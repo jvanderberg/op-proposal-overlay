@@ -12,6 +12,7 @@ export function popupContent(parcel: ParcelProps): HTMLElement {
 			? '#333'
 			: '#fff';
 	const root = document.createElement('div');
+	root.className = 'parcel-popup-body';
 
 	const heading = document.createElement('div');
 	heading.className = 'parcel-popup-heading';

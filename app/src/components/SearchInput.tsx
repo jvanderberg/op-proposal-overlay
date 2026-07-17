@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
 import type { SearchEntry } from '../types';
 
@@ -7,6 +7,7 @@ export function SearchInput({ entries }: { entries: SearchEntry[] }) {
 	const [text, setText] = useState('');
 	const [open, setOpen] = useState(false);
 	const [sel, setSel] = useState(-1);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const setSelectedPin = useStore((s) => s.setSelectedPin);
 
 	const q = text.trim().toLowerCase();
@@ -25,6 +26,10 @@ export function SearchInput({ entries }: { entries: SearchEntry[] }) {
 	function choose(i: number) {
 		const m = matches[i];
 		if (!m) return;
+		// Explicitly dismiss the iOS keyboard before the controls unmount. Without
+		// this, Safari can keep the visual viewport panned to the removed input and
+		// place the popup close button above the visible area.
+		inputRef.current?.blur();
 		setText(m.address || m.pin);
 		setOpen(false);
 		setSelectedPin(m.pin);
@@ -33,6 +38,7 @@ export function SearchInput({ entries }: { entries: SearchEntry[] }) {
 	return (
 		<div className="relative mt-2.5">
 			<input
+				ref={inputRef}
 				type="text"
 				value={text}
 				placeholder="Search address or PIN…"
