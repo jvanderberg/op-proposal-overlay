@@ -24,16 +24,21 @@ crosswalk to the Village's existing zoning map, then assigns the result to all
 | GC, MS, NA | M-3 |
 | DT-1, DT-2, DT-3, H, I, OS, P-R | unchanged |
 
-Search by address or PIN, select a parcel for its existing and proposed
-districts, filter districts from the legend, or compare the parcel result with
-the original Opticos map images.
+Search by address or PIN, select a parcel for a source-zone-specific “What would
+change” comparison, filter proposed districts from the map controls, or compare
+the parcel result with the original Opticos map images. The comparison covers
+key housing, lot, height, coverage, and setback recommendations while preserving
+the report's qualifications around conditional six-unit pathways.
+
+The MapLibre interface follows the system light/dark theme, including the street
+basemap, and adapts the controls and parcel popup into scrollable mobile layouts.
 
 ## Important caveat
 
-This is a deterministic application of Opticos's **district crosswalk** to the
-Village's saved existing-zoning map. It is not an adopted zoning map and cannot
-anticipate parcel-specific map edits the Village or Opticos may make during the
-legislative process.
+This map combines Opticos's published **district crosswalk**, the Village's
+saved existing-zoning map, and the existing parcel map. It is not an adopted
+zoning map and cannot anticipate parcel-specific map edits the Village or
+Opticos may make during the legislative process.
 
 Some Village zoning polygons overlap or leave small coverage gaps around parcel
 boundaries. The generator resolves overlaps by greatest parcel area, uses an
@@ -41,7 +46,7 @@ explicit priority for exact special-district ties, never silently substitutes a
 default district, and records boundary and low-coverage cases in
 [`zoning_summary.json`](app/public/zoning_summary.json).
 
-## Deterministic data pipeline
+## Reproducible data pipeline
 
 The checked-in inputs and method make ordinary regeneration repeatable:
 
